@@ -9,6 +9,8 @@ from typing import Optional
 
 from evals.registry import Registry
 
+import openai
+openai.api_key = "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"
 Task = list[str]
 
 
