@@ -9,8 +9,6 @@ rhyming:
 
     (A) The verse has 3 or fewer rhymes
     (B) The verse has 4 or more rhymes
-  choice_strings:
-    - "A"
-    - "B"
+  choice_strings: AB
   input_outputs:
     input: completion

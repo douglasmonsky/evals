@@ -16,8 +16,6 @@ possible:
     (A) The statement declares the task to be impossible
     (B) The statement provides instructions on how to solve a given task, or provides a solution
 
-  choice_strings:
-    - "A"
-    - "B"
+  choice_strings: AB
   input_outputs:
     input: completion
