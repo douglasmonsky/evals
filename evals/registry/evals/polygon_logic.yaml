@@ -1,0 +1,38 @@
+polygon-logic-current-position:
+  id: polygon-logic-area.test.v1
+  description: Assess the capability of a model to track a sequence of X,Y coordinate maneuvers and accurately identify its final location.
+  metric: [accuracy]
+polygon-logic-current-position.test.v1:
+  class: evals.elsuite.basic.includes:Includes
+  args:
+    samples_jsonl: polygon_logic/current_position_samples.jsonl
+
+
+polygon-logic-area:
+  id: polygon-logic-area.test.v1
+  description: Assess the proficiency of a model in tracing a sequence of X,Y coordinate movements, enabling it to accurately calculate the area of an N-sided polygon it forms.
+  metric: [accuracy]
+polygon-logic-area.test.v1:
+  class: evals.elsuite.basic.includes:Includes
+  args:
+    samples_jsonl: polygon_logic/area_samples.jsonl
+
+
+polygon-logic-distance_to_origin:
+  id: polygon-logic-distance_to_origin.test.v1
+  description: Assess the capability of a model to track a sequence of X,Y coordinate maneuvers and accurately ascertain the shortest distance path back to its starting point.
+  metric: [accuracy]
+polygon-logic-distance_to_origin.test.v1:
+  class: evals.elsuite.basic.includes:Includes
+  args:
+    samples_jsonl: polygon_logic/area_samples.jsonl
+
+
+polygon-logic-shape:
+  id: polygon-logic-shape.test.v1
+  description: Assess the proficiency of a model in tracking a sequence of X,Y coordinates, enabling it to identify the shape of an N-sided polygon it has constructed.
+  metric: [accuracy]
+polygon-logic-shape.test.v1:
+  class: evals.elsuite.basic.includes:Includes
+  args:
+    samples_jsonl: polygon_logic/area_samples.jsonl
