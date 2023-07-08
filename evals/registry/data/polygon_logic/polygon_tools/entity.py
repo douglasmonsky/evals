@@ -122,7 +122,7 @@ class Entity:
 
     def _perform_extra_moves(self, extra_moves: int, distance: float) -> None:
         """
-        Performs extra moves or turns at random for added complexity.
+        Performs extra moves or turns at random (without moving off the shapes linesfor added complexity.
 
         Parameters
         ----------
