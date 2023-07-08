@@ -200,7 +200,7 @@ class Entity:
             "shape": polygon_names.get(sides, f"{sides}-sided polygon"),
             "distance_to_origin": self.position.distance_to_origin(),
             "area": self.calculate_polygon_area(),
-            "current_position": (round(self.position.x, 2), round(self.position.y, 2)),
+            "current_position": f"{round(self.position.x, 2)}, {round(self.position.y, 2)}",
         }
 
         return result
