@@ -1,0 +1,6 @@
+polygon-logical-reasoning:
+  evals:
+    - polygon-logic-current-position
+    - polygon-logic-area
+    - polygon-logic-distance_to_origin
+    - polygon-logic-shape
