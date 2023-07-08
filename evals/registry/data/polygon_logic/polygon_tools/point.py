@@ -33,4 +33,4 @@ class Point:
         -------
         The distance from the point to the origin : float
         """
-        return round(math.sqrt(self.x**2 + self.y**2), 2)
+        return math.sqrt(self.x**2 + self.y**2)
