@@ -1,5 +1,5 @@
 polygon-logic-current-position:
-  id: polygon-logic-area.test.v1
+  id: polygon-logic-current-position.test.v1
   description: Assess the capability of a model to track a sequence of X,Y coordinate maneuvers and accurately identify its final location.
   metric: [accuracy]
 polygon-logic-current-position.test.v1:
@@ -18,14 +18,14 @@ polygon-logic-area.test.v1:
     samples_jsonl: polygon_logic/area_samples.jsonl
 
 
-polygon-logic-distance_to_origin:
-  id: polygon-logic-distance_to_origin.test.v1
+polygon-logic-distance-to-origin:
+  id: polygon-logic-distance-to-origin.test.v1
   description: Assess the capability of a model to track a sequence of X,Y coordinate maneuvers and accurately ascertain the shortest distance path back to its starting point.
   metric: [accuracy]
-polygon-logic-distance_to_origin.test.v1:
+polygon-logic-distance-to-origin.test.v1:
   class: evals.elsuite.basic.includes:Includes
   args:
-    samples_jsonl: polygon_logic/area_samples.jsonl
+    samples_jsonl: polygon_logic/distance_to_origin_samples.jsonl
 
 
 polygon-logic-shape:
@@ -35,4 +35,4 @@ polygon-logic-shape:
 polygon-logic-shape.test.v1:
   class: evals.elsuite.basic.includes:Includes
   args:
-    samples_jsonl: polygon_logic/area_samples.jsonl
+    samples_jsonl: polygon_logic/shape_samples.jsonl
