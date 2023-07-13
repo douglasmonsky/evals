@@ -1,0 +1,76 @@
+compression:
+  prompt: |-
+    You are comparing two provided responses to the same original task.
+    
+    [Original Task]
+    {task_description}
+    
+    [Ideal Response]
+    {ideal}
+    
+    [Response 1]
+    {completion1}
+
+    [Response 2]
+    {completion2}
+
+    Your task is the grade how well each response matches the ideal response. 
+    
+    [Scoring]
+    4 points - Excellent: The LLM's output aligns nearly perfectly with the expected result. 
+    It correctly captures all major and minor aspects, with only negligible differences, if any.
+    The output could practically substitute the expected result.
+
+    3 points - Good: The LLM's output captures the essence of the expected result, with minor differences or omissions.
+    While not a perfect match, it maintains the overall meaning and purpose and provides a useful and accurate representation.
+    
+    2 points - Fair: The LLM's output only partially matches the expected result.
+    While some aspects are correctly represented, there are notable inaccuracies, omissions,
+    or irrelevancies that impact its overall usefulness and accuracy.
+    
+    1 point - Poor: The LLM's output has significant inaccuracies or is entirely irrelevant,
+    offering little to no value in relation to the expected result.
+    The output may miss the task's objective entirely or provide a solution that is inappropriate or incorrect.    
+    
+    [Output Instructions]
+    First, write out in a step by step manner your reasoning about the criterion to be sure that your conclusion is correct.
+    Provide the answer in the following format:
+    (<Response 1 Score>,<Response 2>)
+    Example: (1,2)
+  choice_strings:
+    - "(1,1)"
+    - "(1,2)"
+    - "(1,3)"
+    - "(1,4)"
+    - "(2,1)"
+    - "(2,2)"
+    - "(2,3)"
+    - "(2,4)"
+    - "(3,1)"
+    - "(3,2)"
+    - "(3,3)"
+    - "(3,4)"
+    - "(4,1)"
+    - "(4,2)"
+    - "(4,3)"
+    - "(4,4)"
+  choice_scores:
+    "(1,1)": 0.0
+    "(1,2)": -1.0
+    "(1,3)": -2.0
+    "(1,4)": -3.0
+    "(2,1)": 1.0
+    "(2,2)": 0.0
+    "(2,3)": -1.0
+    "(2,4)": -2.0
+    "(3,1)": 2.0
+    "(3,2)": 1.0
+    "(3,3)": 0.0
+    "(3,4)": -1.0
+    "(4,1)": 3.0
+    "(4,2)": 2.0
+    "(4,3)": 1.0
+    "(4,4)": 0.0
+  input_outputs:
+    input1: completion1
+    input2: completion2
