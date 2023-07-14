@@ -76,11 +76,23 @@ class IndentationStringTransformer(StringTransformer):
         return min(non_zero_counts, default=0)
 
 
+class RemoveEmptyLinesTransformer(StringTransformer):
+    """A transformer class to remove empty lines from a string."""
+
+    def visit(self, raw_code: str) -> str:
+        """Transform string by removing empty lines."""
+        # Split the code into lines
+        lines = raw_code.split("\n")
+
+        # Filter out empty lines
+        non_empty_lines = (line for line in lines if line.strip())
+        return "\n".join(non_empty_lines)
+
+
 class RemoveDocstringsTransformer(ast.NodeTransformer):
     """
     A transformer that removes docstrings from the AST.
     """
-
     def __init__(self) -> None:
         """Initialize the transformer, setting up dictionary to store the docstrings."""
         self.docstrings = {}
@@ -125,18 +137,23 @@ class RemoveDocstringsTransformer(ast.NodeTransformer):
         # Continue the traversal as normal for all nodes.
         return self.generic_visit(node)
 
+    def clear_docstrings(self) -> None:
+        """Clear the docstrings dictionary."""
+        self.docstrings = {}
+
 
 class IdentifierRenamingTransformer(ast.NodeTransformer):
     """
     Class to transform identifiers in the AST.
     """
-
+    # TODO(Monsky): Bugfix - class methods that are called elsewhere in the class are not properly renamed.
+    # Name of the single character redefinition of the method. Need to implement a helper class that encapsulates the
+    # renaming of methods and variables attaching them to the class they belong to.
     def __init__(self, rename_self: bool = False) -> None:
         """Initialize transformer, setting up name generators and maps and deciding whether to rename 'self'."""
-        self.new_var_names = self.generate_names(string.ascii_lowercase)
+        self.new_names = self.generate_names(string.ascii_lowercase)
         self.new_class_names = self.generate_names(string.ascii_uppercase)
-        self.var_names_map = [{}]
-        self.class_names_map = [{}]
+        self.names_map = [{}]
         self.rename_self = rename_self
 
     @staticmethod
@@ -154,28 +171,35 @@ class IdentifierRenamingTransformer(ast.NodeTransformer):
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> ast.FunctionDef:
         """Transform function definition nodes."""
-        self.var_names_map.append({})
-        node.name = next(self.new_var_names)
+        self.names_map.append({})
+        old_name = node.name
+        new_name = next(self.new_names)
+        node.name = new_name
+        self.names_map[-1][old_name] = new_name
 
         # Rename function arguments
         for arg in node.args.args:
             if arg.arg == 'self' and not self.rename_self:
                 continue
-            self.var_names_map[-1][arg.arg] = next(self.new_var_names)
-            arg.arg = self.var_names_map[-1][arg.arg]
+            old_arg_name = arg.arg
+            new_arg_name = next(self.new_names)
+            self.names_map[-1][old_arg_name] = new_arg_name
+            arg.arg = new_arg_name
 
         self.generic_visit(node)
-        self.var_names_map.pop()
+        self.names_map.pop()
         return node
 
     def visit_ClassDef(self, node: ast.ClassDef) -> ast.ClassDef:
         """Transform class definition nodes."""
-        self.var_names_map.append({})
-        new_class_name = next(self.new_class_names)
-        self.class_names_map[-1][node.name] = new_class_name
-        node.name = new_class_name
+        self.names_map.append({})
+        old_name = node.name
+        new_name = next(self.new_class_names)
+        node.name = new_name
+        self.names_map[-1][old_name] = new_name
+
         self.generic_visit(node)
-        self.var_names_map.pop()
+        self.names_map.pop()
         return node
 
     def visit_Name(self, node: ast.Name) -> ast.Name:
@@ -188,21 +212,32 @@ class IdentifierRenamingTransformer(ast.NodeTransformer):
             self._update_name_in_load_context(node)
         return node
 
-    def _update_name_in_store_context(self, node: ast.Name) -> ast.Name:
+    def visit_Call(self, node: ast.Call) -> ast.Call:
+        """Transform call nodes."""
+        if isinstance(node.func, ast.Name):
+            self._update_name_in_load_context(node.func)
+        return self.generic_visit(node)
+
+    def visit_Attribute(self, node: ast.Attribute) -> ast.Attribute:
+        """Transform attribute nodes."""
+
+        if isinstance(node.ctx, ast.Store) and node.attr not in self.names_map[-1]:
+            self.names_map[-1][node.attr] = next(self.new_names)
+        print(self.names_map)
+        print("Attribute: ", node.attr)
+
+        node.attr = self.names_map[-1].get(node.attr, node.attr)
+        return self.generic_visit(node)
+
+    def _update_name_in_store_context(self, node: ast.Name) -> None:
         """Update names in the store context."""
-        if node.id not in self.var_names_map[-1]:
-            self.var_names_map[-1][node.id] = next(self.new_var_names)
-        node.id = self.var_names_map[-1][node.id]
+        if node.id not in self.names_map[-1]:
+            self.names_map[-1][node.id] = next(self.new_names)
+        node.id = self.names_map[-1][node.id]
 
     def _update_name_in_load_context(self, node: ast.Name) -> None:
         """Update names in the load context."""
-        # Check variable names map
-        for scope in reversed(self.var_names_map):
-            if node.id in scope:
-                node.id = scope[node.id]
-                break
-        # Check class names map
-        for scope in reversed(self.class_names_map):
+        for scope in reversed(self.names_map):
             if node.id in scope:
                 node.id = scope[node.id]
                 break

@@ -10,7 +10,7 @@ class PythonCompressor:
         self.code = PythonCode(object_)
         self.transformers = transformers
 
-    def compress(self) -> str:
+    def compress(self) -> PythonCode:
         for transformer in self.transformers:
             self.code.transform(transformer)
         return self.code
