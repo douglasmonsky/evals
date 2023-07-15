@@ -1,0 +1,10 @@
+python-simple-compression:
+  id: python-simple-compression.dev.v1
+  description: Evaluate if applying simple token compression strategies to python code reduce the quality of its understanding of the code by assessing how well it generates docstrings for it before and after compression.
+  metric: [accuracy]
+python-simple-compression.dev.v1:
+  class: evals.elsuite.modelgraded.classify:ModelBasedClassify
+  args:
+    samples_jsonl: compression/code_compression/python_compression/simple_python_compression.jsonl
+    eval_type: cot_classify
+    modelgraded_spec: granular_battle
